@@ -1,0 +1,37 @@
+CREATE TABLE employees (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(250) NOT NULL,
+    document_type VARCHAR(45) NOT NULL,
+    document_number INT NOT NULL,
+    position VARCHAR(250),
+    department VARCHAR(250),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE company_assets (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    serial_code VARCHAR(250) NOT NULL,
+    trademark VARCHAR(250) NOT NULL,
+    reference VARCHAR(250) NOT NULL,
+    description LONGTEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    employees_id BIGINT,
+    FOREIGN KEY (employees_id) REFERENCES employees(id)
+);
+
+CREATE TABLE logs (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    employees_id BIGINT,
+    company_assets_id BIGINT,
+    assigner VARCHAR(250),
+    payload JSON,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (employees_id) REFERENCES employees(id),
+    FOREIGN KEY (company_assets_id) REFERENCES company_assets(id)
+);
+
+CREATE INDEX idx_employees_id ON company_assets (employees_id);
+CREATE INDEX idx_employees_id ON logs (employees_id);
+CREATE INDEX idx_company_assets_id ON logs (company_assets_id);
